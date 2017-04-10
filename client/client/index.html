@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Chatterbox Client">
+    <meta name="author" content="Arseniy Kotov">
+    <!-- Mobile Specific Metas
+      –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- CSS
+      –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/normalize.css">
+    <link rel="stylesheet" href="styles/skeleton.css">
+    <title>Chatterbox</title>
+    <!-- dependencies -->
+    <script src="../bower_components/underscore/underscore.js"></script>  
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.timeago.js"></script>
+    
+    <script>
+      // YOU DO NOT NEED TO EDIT THIS CODE
+      if (!/(&|\?)username=/.test(window.location.search)) {
+        var newSearch = window.location.search;
+        if (newSearch !== '' & newSearch !== '?') {
+          newSearch += '&';
+        }
+        newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
+        window.location.search = newSearch;
+      }
+    </script>
+    <!-- your scripts -->
+    <script src="env/config.js"></script>
+    <script src="scripts/app.js"></script>
+  </head>
+  <body>
+
+    <div class="container">
+      <div class="row">
+        <div class="twelve columns">
+          <h1 id="header">Chatterbox</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="six columns">
+            <label class ="u-pull-left" for="exampleMessage">Message</label>
+            <textarea class="u-full-width" placeholder="Enter your message here..." id="exampleMessage"></textarea>
+        </div>
+        <div id="roomHeight" class="three columns">
+          <label for="roomSelect">Choose a Room</label>
+          <select id="roomSelect">      
+            <!--<option value="Option 1">Lobby</option>
+            <option value="Option 2">Admiration</option>
+            <option value="Option 3">Can I get your number?</option>-->
+          </select>
+        </div>
+        <div class="three columns">
+          <label for="addRoom">Add a Room</label>
+          <textarea placeholder="Enter your roomname here..." id="postAddRoom"></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="four columns">
+          <input id ="postMessage" class="button-primary u-pull-left" type="submit" value="submit input">
+        </div>
+        <div class="four columns">
+          <input id="refresh" class="button-primary u-pull-left" type="submit" value="refresh tweets">
+        </div>
+        <div class="four columns">
+          <input id="postAddRoom" class="button-primary u-pull-right" type="submit" value="Add Room">
+        </div>
+      </div>
+
+
+      <div class="container">
+        <div class="twelve rows">
+          <nav>
+            <p class="headers">Username</p>
+            <p class="headers">Message</p>
+            <p class="headers">Timeago</p>
+          </nav>
+        </div>
+      </div>
+      <div id ="chats" class="container"></div>    
+  
+  </body>
+</html>

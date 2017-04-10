@@ -1,0 +1,152 @@
+body {
+    background: #eee;
+    text-align: center;
+    padding: 0 25px;
+    font-family: arial, sans-serif;
+}
+
+#header {
+  padding: 50px 60px;
+  border: solid lightskyblue;
+  background: white;
+}
+
+#chats {
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    background: white;
+    padding: 50px 50px;
+    border: solid lightskyblue;
+    border-width: 1px 1px 1px 1px;
+}
+
+#main h1 {
+    margin-top: 0;
+    font-size: 35px;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+#main h1 span {
+    font-style:italic;
+}
+
+#main ul {
+    padding-left: 20px;
+}
+
+#main .error {
+    border: 1px solid red;
+    background: #FDEFF0;
+    padding: 20px;
+}
+
+#main .success {
+    margin-top: 25px;
+}
+
+#main .success code {
+    font-size: 12px;
+    color: green;
+    line-height: 13px;
+}
+
+form {
+    padding: 20px;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+form input[type=text] {
+    margin-right: 10px;
+    width: 70%;
+    font-size: 12px;
+    padding: 5px;
+}
+
+.chat {
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: #eee;
+}
+
+.chat .username {
+    font-weight: 800;
+}
+
+.chat:hover {
+    background-color: #ddd;
+}
+
+.spinner {
+    float: right;
+    height: 46px;
+    margin-bottom: 5px;
+}
+
+.spinner img {
+    padding: 10px;
+}
+
+.friend {
+    color: #fff;
+    background-color: #0090da;
+}
+
+.userName {
+  margin: auto;
+  text-align: center;
+}
+
+.userName:hover {
+  text-decoration: underline;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.userName:visited {
+  color: cyan;
+}
+
+.tweet {
+  border: 2px solid lightskyblue;
+  padding: 30px 5px 5px 5px;
+  margin-bottom: 5px;
+}
+
+.textBox {
+  text-align: center;
+}
+
+#roomHeight {
+  text-align: center;
+}
+
+
+.headers {
+  display: inline-block;
+  display: -moz-inline-box;
+  width: 30%;
+  text-align: center;
+  border: 2px solid lightskyblue;
+  background-color: white;
+}
+
+#exampleMessage {
+  border: 2px solid lightskyblue;
+}
+
+#postAddRoom {
+  border: 2px solid lightskyblue;
+}
+
+#roomSelect{
+  border: 2px solid lightskyblue;
+  width: 200px;
+  overflow: hidden;
+}
+
+option {
+  text-overflow: ellipsis;
+}
