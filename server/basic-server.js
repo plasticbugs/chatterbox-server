@@ -27,6 +27,9 @@ var ip = '127.0.0.1';
 //handleRequest.requestHandler because we're requesting the module (require returns us a module (which is an object))
 var server = http.createServer(handleRequest.requestHandler);
 console.log('Listening on http://' + ip + ':' + port);
+// server.on('request', function(request, response){
+//     console.log(request.url)
+// })
 server.listen(port, ip);
 
 // To start this server, run:
