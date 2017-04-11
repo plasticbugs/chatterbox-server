@@ -52,38 +52,46 @@ var requestHandler = function(request, response) {
   headers['Content-Type'] = 'application/json';
   
   // if GET
+  //test for nonexistent file
+  if (request.url !== '/classes/messages') {
+    statusCode = 404;
+    response.writeHead(statusCode, headers);
+    response.end(statusCode);
+  }
+  
   if (request.method === 'GET' && request.url === '/classes/messages') {
-    // response.writeHead(statusCode, headers);
-    // var json = JSON.stringify({results: messageData});
-    // response.end(json);
+    response.writeHead(statusCode, headers);
     fs.exists('database.json', function(exists) {
       if (exists) {
-        fs.readFile('database.json', function readFileCallback(error, data) {
+        fs.readFile('database.json', 'utf8', function readFileCallback(error, data) {
           if (error) {
             console.log('You messed up');
           } else {
-            //var obj = JSON.parse(data);
-            response.end(data);
+            console.log('the GET data', data);
+            var parsedData = JSON.parse(data);
+            response.write(JSON.stringify({results: parsedData}));
+            response.end();
           }
         });
       } else {
-        var json = JSON.stringify({results: []});
-        fs.writeFile('database.json', json);
-        response.end(json);
+        var arr = [];
+        fs.writeFile('database.json', "[]");
+        response.end(JSON.stringify({results: arr}));
       }
     });     
 
   // if POST
   } else if (request.method === 'POST' && request.url === '/classes/messages') {
     statusCode = 201;
-    
+
     var messageBody = [];
     
     request.on('data', function(chunk) {
       messageBody.push(chunk);
     }).on('end', function () {
       messageBody = Buffer.concat(messageBody).toString();
-      JSON.parse(messageBody);
+      console.log('messageBody: ', messageBody);
+
       // console.dir(messageData);
       response.writeHead(statusCode, headers);
 
@@ -94,17 +102,18 @@ var requestHandler = function(request, response) {
               console.log('whoops');
               response.end();
             } else {
-              var obj = JSON.parse(data);
-              obj.results.push(messageBody);
-              var json = JSON.stringify(obj);
+              var array = JSON.parse(data);
+              console.log('the Obj: ', array);
+              array.push(messageBody);
+              var json = JSON.stringify(array);
               fs.writeFile('database.json', json);
               response.end();
             }
           });
         } else {
-          var json = JSON.stringify({results: []});
+          var json = "[" + messageBody + "]";
           fs.writeFile('database.json', json);
-          response.end(json);
+          response.end();
         }
       });
     });
