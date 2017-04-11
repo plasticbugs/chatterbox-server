@@ -69,8 +69,9 @@ var requestHandler = function(request, response) {
       } else {
         var json = JSON.stringify({results: []});
         fs.writeFile('database.json', json);
+        response.end(json);
       }
-    });
+    });     
 
   // if POST
   } else if (request.method === 'POST' && request.url === '/classes/messages') {
@@ -82,9 +83,30 @@ var requestHandler = function(request, response) {
       messageBody.push(chunk);
     }).on('end', function () {
       messageBody = Buffer.concat(messageBody).toString();
-      messageData.push(JSON.parse(messageBody));
+      JSON.parse(messageBody)
       // console.dir(messageData);
       response.writeHead(statusCode, headers);
+
+      fs.exists('database.json', function (exists) {
+        if (exists) {
+          fs.readFile('database.json', function (error, data) {
+            if(error) {
+              console.log('whoops');
+              response.end();
+            } else {
+              var obj = JSON.parse(data);
+              obj.results.push(messageBody);
+              var json = JSON.stringify(obj);
+              fs.writeFile('database.json', json);
+              response.end();
+            }
+          })
+        } else {
+          var json = JSON.stringify({results: []});
+          fs.writeFile('database.json', json);
+          response.end(json);
+        }
+      });
     });
   }
   // .writeHead() writes to the request line and headers of the response,
