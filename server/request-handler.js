@@ -83,14 +83,14 @@ var requestHandler = function(request, response) {
       messageBody.push(chunk);
     }).on('end', function () {
       messageBody = Buffer.concat(messageBody).toString();
-      JSON.parse(messageBody)
+      JSON.parse(messageBody);
       // console.dir(messageData);
       response.writeHead(statusCode, headers);
 
       fs.exists('database.json', function (exists) {
         if (exists) {
           fs.readFile('database.json', function (error, data) {
-            if(error) {
+            if (error) {
               console.log('whoops');
               response.end();
             } else {
@@ -100,7 +100,7 @@ var requestHandler = function(request, response) {
               fs.writeFile('database.json', json);
               response.end();
             }
-          })
+          });
         } else {
           var json = JSON.stringify({results: []});
           fs.writeFile('database.json', json);
