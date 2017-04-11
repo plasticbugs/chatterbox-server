@@ -11,6 +11,8 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var fs = require('fs');
+
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -19,7 +21,7 @@ var defaultCorsHeaders = {
 };
 
 var requestHandler = function(request, response) {
-  var messageData = [];
+  
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -51,17 +53,39 @@ var requestHandler = function(request, response) {
   
   // if GET
   if (request.method === 'GET' && request.url === '/classes/messages') {
-    console.log('got a GET');
-    response.writeHead(statusCode, headers);
-
-    response.write(JSON.stringify({results: []}));
+    // response.writeHead(statusCode, headers);
+    // var json = JSON.stringify({results: messageData});
+    // response.end(json);
+    fs.exists('database.json', function(exists) {
+      if (exists) {
+        fs.readFile('database.json', function readFileCallback(error, data) {
+          if (error) {
+            console.log('You messed up');
+          } else {
+            //var obj = JSON.parse(data);
+            response.end(data);
+          }
+        });
+      } else {
+        var json = JSON.stringify({results: []});
+        fs.writeFile('database.json', json);
+      }
+    });
 
   // if POST
   } else if (request.method === 'POST' && request.url === '/classes/messages') {
-    console.log('got a POST');
-    // messageData
     statusCode = 201;
-    response.writeHead(statusCode, headers);
+    
+    var messageBody = [];
+    
+    request.on('data', function(chunk) {
+      messageBody.push(chunk);
+    }).on('end', function () {
+      messageBody = Buffer.concat(messageBody).toString();
+      messageData.push(JSON.parse(messageBody));
+      // console.dir(messageData);
+      response.writeHead(statusCode, headers);
+    });
   }
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
@@ -73,7 +97,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end();
+  // response.end();
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
