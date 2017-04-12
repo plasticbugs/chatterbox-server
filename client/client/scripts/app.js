@@ -1,6 +1,6 @@
 var App = function() {
-  this.server = 'http://parse.sfs.hackreactor.com/chatterbox/classes/messages';
-  this.username = 'Arseniy';
+  this.server = 'http://127.0.0.1:3000/classes/messages';
+  this.username = 'Scott';
   this.roomList = [];
 };
 
@@ -11,7 +11,7 @@ App.prototype.init = function() {
 App.prototype.send = function(message) {
 
   $.ajax({
-    url: 'http://parse.sfs.hackreactor.com/chatterbox/classes/messages',
+    url: 'http://127.0.0.1:3000/classes/messages',
     type: 'POST',
     data: JSON.stringify(message),
     contentType: 'application/json',
@@ -30,7 +30,7 @@ App.prototype.fetch = function(room) {
 
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
-    url: 'http://parse.sfs.hackreactor.com/chatterbox/classes/messages',
+    url: 'http://127.0.0.1:3000/classes/messages',
     type: 'GET',
     contentType: 'application/json',
     data: {
@@ -41,58 +41,58 @@ App.prototype.fetch = function(room) {
       
       console.log(data.results);
 
-      for (var i = 0; i < data.results.length; i++) {
-        if (data.results[i].roomname === '' || data.results[i].roomname === null || data.results[i].roomname === undefined ) {
-          data.results.splice(i, 1);
-          i--;
-          continue;
-        }
-        if (!_.has(data.results[i], 'text') || !_.has(data.results[i], 'username') || data.results[i].text === '') {
-          data.results.splice(i, 1);
-          i--;
-          continue;
-        }
-        if (data.results[i].roomname.length > 20) {
-          data.results.splice(i, 1);
-          i--;
-          continue;
-        }
-        if (data.results[i].text && data.results[i].text.match('<.*>')) { 
-          data.results.splice(i, 1);
-          i--;
-          continue;
-        }
-        if (data.results[i].username && data.results[i].username.match('<.*>')) {
-          data.results.splice(i, 1);
-          i--;
-          continue;
-        }
-        if (data.results[i].createdAt && data.results[i].createdAt.match('<.*>')) {
-          data.results.splice(i, 1);
-          i--;
-          continue;
-        }
-        if (data.results[i].updatedAt && data.results[i].updatedAt.match('<.*>')) {
-          data.results.splice(i, 1);
-          i--;
-          continue;
-        }
-        if (data.results[i].roomname && data.results[i].roomname.match('<.*>')) {
-          data.results.splice(i, 1);
-          i--;
-          continue;
-        }
-        if (data.results[i].username && data.results[i].username === 'hi') {
-          data.results.splice(i, 1);
-          i--;
-          continue;
-        }
-        if (data.results[i].username && data.results[i].username === 'plasticbugs') {
-          data.results.splice(i, 1);
-          i--;
-          continue;
-        }
-      }
+      // for (var i = 0; i < data.results.length; i++) {
+      //   if (data.results[i].roomname === '' || data.results[i].roomname === null || data.results[i].roomname === undefined ) {
+      //     data.results.splice(i, 1);
+      //     i--;
+      //     continue;
+      //   }
+      //   if (!_.has(data.results[i], 'text') || !_.has(data.results[i], 'username') || data.results[i].text === '') {
+      //     data.results.splice(i, 1);
+      //     i--;
+      //     continue;
+      //   }
+      //   if (data.results[i].roomname.length > 20) {
+      //     data.results.splice(i, 1);
+      //     i--;
+      //     continue;
+      //   }
+      //   if (data.results[i].text && data.results[i].text.match('<.*>')) { 
+      //     data.results.splice(i, 1);
+      //     i--;
+      //     continue;
+      //   }
+      //   if (data.results[i].username && data.results[i].username.match('<.*>')) {
+      //     data.results.splice(i, 1);
+      //     i--;
+      //     continue;
+      //   }
+      //   if (data.results[i].createdAt && data.results[i].createdAt.match('<.*>')) {
+      //     data.results.splice(i, 1);
+      //     i--;
+      //     continue;
+      //   }
+      //   if (data.results[i].updatedAt && data.results[i].updatedAt.match('<.*>')) {
+      //     data.results.splice(i, 1);
+      //     i--;
+      //     continue;
+      //   }
+      //   if (data.results[i].roomname && data.results[i].roomname.match('<.*>')) {
+      //     data.results.splice(i, 1);
+      //     i--;
+      //     continue;
+      //   }
+      //   if (data.results[i].username && data.results[i].username === 'hi') {
+      //     data.results.splice(i, 1);
+      //     i--;
+      //     continue;
+      //   }
+      //   if (data.results[i].username && data.results[i].username === 'plasticbugs') {
+      //     data.results.splice(i, 1);
+      //     i--;
+      //     continue;
+      //   }
+      // }
 
       if (room !== undefined) {
         for (var i = 0; i < data.results.length; i++) {
@@ -143,16 +143,13 @@ App.prototype.renderMessage = function(message) {
   if (message) {
 
     var username = message.username;
-    var created = $.timeago(message.createdAt) || $.now();
+    //var created = message.createdAt || $.now();
     var roomname = message.roomname || 'lobby';
     var text = message.text;
 
     var elementToAppend = `<div class="row tweet">
                             <div class="two columns">
                               <p class="userName">` + username + `</p>
-                            </div>
-                            <div class="four columns u-pull-right">
-                              <p>` + created + `</p>
                             </div>
                             <div class="six columns">
                               <p class="textBox">` + text + `</p>
@@ -199,8 +196,7 @@ App.prototype.handleSubmit = function() {
 var app = new App();
 
 $(document).ready(function() {
-  $('time.timeago').timeago();
-  $.timeago.settings.allowFuture = false;
+
   app.init();
 
   $('#refresh').on('click', function(event) {
@@ -222,7 +218,7 @@ $(document).ready(function() {
       username: app.username,
       createdAt: $.now(),   
       text: myText,
-      roomname: $('#roomSelect').val()
+      roomname: $('#roomSelect').val() || "lobby"
     };
 
     app.send(newMessage);

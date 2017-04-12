@@ -21,7 +21,12 @@ var defaultCorsHeaders = {
 };
 
 var requestHandler = function(request, response) {
+  var headers = defaultCorsHeaders;
   
+  if (request.method === 'OPTIONS') {
+    response.writeHead(200, 'OK', headers);
+    response.end('Approving request');
+  }
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -43,24 +48,31 @@ var requestHandler = function(request, response) {
   var statusCode = 200;
 
   // See the note below about CORS headers.
-  var headers = defaultCorsHeaders;
 
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
   headers['Content-Type'] = 'application/json';
-  
+
   // if GET
-  //test for nonexistent file
-  if (request.url !== '/classes/messages') {
+  //test for nonexistent files/urls
+  
+  var checkForQuestionMark = request.url.indexOf('?');
+  if (checkForQuestionMark > -1) {
+    var beforeQuestionMark = request.url.slice(0,request.url.indexOf("?"));
+  } else {
+    beforeQuestionMark = request.url;
+  }
+  if (beforeQuestionMark !== '/classes/messages') {
     statusCode = 404;
-    response.writeHead(statusCode, headers);
-    response.end(statusCode);
+    response.writeHead(statusCode, "Not Found" , headers);
+    response.end();
   }
   
-  if (request.method === 'GET' && request.url === '/classes/messages') {
-    response.writeHead(statusCode, headers);
+  if (request.method === 'GET' && beforeQuestionMark === '/classes/messages') {
+    response.writeHead(statusCode, "OK" ,headers);
+    // response.statusCode = 200;
     fs.exists('database.json', function(exists) {
       if (exists) {
         fs.readFile('database.json', 'utf8', function readFileCallback(error, data) {
@@ -68,20 +80,24 @@ var requestHandler = function(request, response) {
             console.log('You messed up');
           } else {
             console.log('the GET data', data);
-            var parsedData = JSON.parse(data);
-            response.write(JSON.stringify({results: parsedData}));
-            response.end();
+            var parsedData = data.split('\n');
+            var piecesOfData = []
+            parsedData.forEach(function (pieceOfData) {
+              piecesOfData.push(pieceOfData.trim());
+            });
+            parsedData = JSON.parse(piecesOfData);
+            response.end(JSON.stringify({results: parsedData}));
           }
         });
       } else {
         var arr = [];
-        fs.writeFile('database.json', "[]");
+        // fs.writeFile('database.json', "");
         response.end(JSON.stringify({results: arr}));
       }
     });     
 
   // if POST
-  } else if (request.method === 'POST' && request.url === '/classes/messages') {
+  } else if (request.method === 'POST') {
     statusCode = 201;
 
     var messageBody = [];
@@ -97,21 +113,22 @@ var requestHandler = function(request, response) {
 
       fs.exists('database.json', function (exists) {
         if (exists) {
-          fs.readFile('database.json', function (error, data) {
-            if (error) {
-              console.log('whoops');
-              response.end();
-            } else {
-              var array = JSON.parse(data);
-              console.log('the Obj: ', array);
-              array.push(messageBody);
-              var json = JSON.stringify(array);
-              fs.writeFile('database.json', json);
-              response.end();
-            }
-          });
+          console.log(messageBody);
+          // fs.readFile('database.json', function (error, data) {
+          //   if (error) {
+          //     console.log('whoops');
+          //     response.end();
+          //   } else {
+          //     var array = JSON.parse(data);
+          //     console.log('the data: ', data);
+          //     array.push(JSON.stringify(messageBody));
+              
+          fs.appendFile('database.json', messageBody + "\n");
+          response.end();
+            //}
+          // });
         } else {
-          var json = "[" + messageBody + "]";
+          var json = messageBody + "\n";
           fs.writeFile('database.json', json);
           response.end();
         }
